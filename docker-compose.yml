@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    command: postgres -c 'max_connections=2000'
+    environment:
+      POSTGRES_PASSWORD: aioshima
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql
+volumes:
+  pgdata:
