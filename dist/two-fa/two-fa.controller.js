@@ -39,6 +39,7 @@ let TwoFaController = class TwoFaController {
         if (!isCodeValid) {
             throw new common_1.UnauthorizedException('Wrong authentication code');
         }
+        this.userService.turnOnTwoFactorAuthentication(request.user.id);
         return this.authService.getAccess2FA(request.user);
     }
 };

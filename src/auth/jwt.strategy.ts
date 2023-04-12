@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { DatabaseService } from 'src/database/database.service';
 require('dotenv').config();
+console.log(process.env.SERECT_JWT);
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly databaseService: DatabaseService) {

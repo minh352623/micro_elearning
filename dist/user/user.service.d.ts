@@ -17,6 +17,8 @@ export declare class UserService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
+        createdAt: Date;
+        updatedAt: Date;
     }>>;
     setTwoFactorAuthenticationSecret(secret: string, user_id: number): Promise<import(".prisma/client").User>;
     turnOnTwoFactorAuthentication(user_id: number): Promise<import(".prisma/client").User>;

@@ -26,6 +26,7 @@ const decorators_1 = require("@nestjs/common/decorators");
 const jwt_1 = require("@nestjs/jwt");
 const database_service_1 = require("../database/database.service");
 const bcrypt = require("bcryptjs");
+require('dotenv').config();
 let AuthService = class AuthService {
     constructor(jwtService, databaseService) {
         this.jwtService = jwtService;
@@ -82,9 +83,17 @@ let AuthService = class AuthService {
         }
     }
     async getAccess2FA(user) {
-        const payload = Object.assign(Object.assign({}, user), { isSecondFactorAuthenticated: true });
-        const token = this.jwtService.sign(payload);
-        return { token };
+        try {
+            const payload = Object.assign(Object.assign({}, user), { isSecondFactorAuthenticated: true });
+            console.log();
+            const token = this.jwtService.sign(payload, {
+                secret: process.env.SERECT_JWT,
+            });
+            return { token };
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 };
 AuthService = __decorate([

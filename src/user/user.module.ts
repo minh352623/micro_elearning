@@ -17,7 +17,7 @@ import { AuthModule } from 'src/auth/auth.module';
     //   },
     // }),
     // PassportModule.register({ defaultStrategy: 'jwt' }),
-    AuthModule,
+    // AuthModule,
   ],
   controllers: [UserController],
   providers: [UserService, DatabaseService, JwtTwoFactorStrategy, JwtStrategy],

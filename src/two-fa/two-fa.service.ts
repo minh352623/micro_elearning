@@ -4,10 +4,14 @@ import { toFileStream } from 'qrcode';
 import { UserDTO } from 'src/user/user.dto';
 import { UserService } from 'src/user/user.service';
 import 'dotenv/config';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class TwoFaService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   async pipeQrCodeStream(stream: Response, otpAuthUrl: string) {
     return toFileStream(stream, otpAuthUrl);

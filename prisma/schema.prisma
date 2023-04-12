@@ -24,6 +24,8 @@ model User {
   password String?
   twoFactorAuthenticationSecret String?
   isTwoFactorAuthenticationEnabled Boolean? @default(false)
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
 
 }
 
@@ -31,6 +33,8 @@ model Group {
   id    Int                 @id @default(autoincrement())
   name  String
   users GroupUser[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
 }
 
 model GroupUser {
@@ -38,8 +42,7 @@ model GroupUser {
   userId     Int // relation scalar field (used in the `@relation` attribute above)
   group   Group @relation(fields: [groupId], references: [id])
   groupId Int // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
-  assignedBy String
-
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
   @@id([userId, groupId])
 }
