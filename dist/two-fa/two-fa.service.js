@@ -15,9 +15,11 @@ const otplib_1 = require("otplib");
 const qrcode_1 = require("qrcode");
 const user_service_1 = require("../user/user.service");
 require("dotenv/config");
+const auth_service_1 = require("../auth/auth.service");
 let TwoFaService = class TwoFaService {
-    constructor(userService) {
+    constructor(userService, authService) {
         this.userService = userService;
+        this.authService = authService;
     }
     async pipeQrCodeStream(stream, otpAuthUrl) {
         return (0, qrcode_1.toFileStream)(stream, otpAuthUrl);
@@ -40,7 +42,8 @@ let TwoFaService = class TwoFaService {
 };
 TwoFaService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        auth_service_1.AuthService])
 ], TwoFaService);
 exports.TwoFaService = TwoFaService;
 //# sourceMappingURL=two-fa.service.js.map

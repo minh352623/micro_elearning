@@ -38,4 +38,10 @@ export class UserController {
       console.log(err);
     }
   }
+
+  @UseGuards(AuthGuard('jwt-two-factor'))
+  @Get('profile')
+  async getProfile(@Req() req: any) {
+    return req.user;
+  }
 }

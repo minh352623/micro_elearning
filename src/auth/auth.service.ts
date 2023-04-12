@@ -9,6 +9,8 @@ import { DatabaseService } from 'src/database/database.service';
 import { UserDTO, UserRegisterDTO } from 'src/user/user.dto';
 import * as bcrypt from 'bcryptjs';
 import { Prisma } from '@prisma/client';
+require('dotenv').config();
+
 @Injectable()
 export class AuthService {
   private loggerService: Logger;
@@ -77,12 +79,20 @@ export class AuthService {
   }
 
   async getAccess2FA(user: any) {
-    const payload = {
-      ...user,
-      isSecondFactorAuthenticated: true,
-    };
-    const token = this.jwtService.sign(payload);
+    try {
+      const payload = {
+        ...user,
+        isSecondFactorAuthenticated: true,
+      };
+      console.log();
 
-    return { token };
+      const token = this.jwtService.sign(payload, {
+        secret: process.env.SERECT_JWT,
+      });
+
+      return { token };
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

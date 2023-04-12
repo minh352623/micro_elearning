@@ -35,6 +35,9 @@ let UserController = class UserController {
             console.log(err);
         }
     }
+    async getProfile(req) {
+        return req.user;
+    }
 };
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt-two-factor')),
@@ -45,6 +48,14 @@ __decorate([
     __metadata("design:paramtypes", [Request, user_dto_1.UserDTO]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt-two-factor')),
+    (0, common_1.Get)('profile'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getProfile", null);
 UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

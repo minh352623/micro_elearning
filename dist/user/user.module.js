@@ -13,14 +13,11 @@ const user_service_1 = require("./user.service");
 const database_service_1 = require("../database/database.service");
 const jwtTwoFactor_strategy_1 = require("../auth/jwtTwoFactor.strategy");
 const jwt_strategy_1 = require("../auth/jwt.strategy");
-const auth_module_1 = require("../auth/auth.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            auth_module_1.AuthModule,
-        ],
+        imports: [],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService, database_service_1.DatabaseService, jwtTwoFactor_strategy_1.JwtTwoFactorStrategy, jwt_strategy_1.JwtStrategy],
     })

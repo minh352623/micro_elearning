@@ -15,6 +15,7 @@ const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const database_service_1 = require("../database/database.service");
 require('dotenv').config();
+console.log(process.env.SERECT_JWT);
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     constructor(databaseService) {
         super({

@@ -7,7 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('jwt-two-factor'))
+  // @UseGuards(AuthGuard('jwt-two-factor'))
   @Post('/register')
   register(@Body() user: UserRegisterDTO) {
     try {

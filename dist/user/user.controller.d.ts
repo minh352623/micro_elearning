@@ -18,6 +18,9 @@ export declare class UserController {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
         };
     }>>;
+    getProfile(req: any): Promise<any>;
 }
