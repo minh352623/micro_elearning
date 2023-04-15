@@ -5,8 +5,10 @@ import { UserService } from 'src/user/user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { DatabaseService } from 'src/database/database.service';
 import { JwtService } from '@nestjs/jwt';
+import { SearchModule } from 'src/search/search.module';
 
 @Module({
+  imports: [SearchModule],
   controllers: [TwoFaController],
   providers: [
     TwoFaService,

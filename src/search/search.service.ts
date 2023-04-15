@@ -3,30 +3,32 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Injectable()
 export class SearchService {
-  index = 'exchange';
-
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
-  async indexPost(exchange: any) {
+  async createIndex(index: string, data: any) {
     return this.elasticsearchService.index<any>({
-      index: this.index,
+      index: index,
       document: {
-        id: exchange.id,
-        price_exchange: exchange.price_exchange,
-        name_exchange: exchange.name_exchange,
-        quantity_exchange: exchange.quantity_exchange,
+        ...data,
       },
     });
   }
 
-  async search(text: string) {
+  async search(
+    index: string,
+    text: string,
+    from: number = 5,
+    size: number = 10,
+  ) {
+    console.log({ text, index });
+
     const body = await this.elasticsearchService.search({
-      index: this.index,
+      index: index,
       body: {
         query: {
           multi_match: {
             query: text,
-            fields: ['name_exchange', 'price_exchange'],
+            fields: ['_all'],
           },
         },
       },
@@ -37,13 +39,13 @@ export class SearchService {
     return hits.map((item) => item._source);
   }
 
-  async remove(postId: number) {
+  async remove(index: string, dataId: number) {
     this.elasticsearchService.deleteByQuery({
-      index: this.index,
+      index: index,
       body: {
         query: {
           match: {
-            id: postId,
+            id: dataId,
           },
         },
       },

@@ -26,6 +26,7 @@ model User {
   isTwoFactorAuthenticationEnabled Boolean? @default(false)
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
+  deleted               Boolean      @default(false)
 
 }
 
@@ -35,6 +36,7 @@ model Group {
   users GroupUser[]
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
+  deleted               Boolean     @default(false)
 }
 
 model GroupUser {
@@ -44,5 +46,6 @@ model GroupUser {
   groupId Int // relation scalar field (used in the `@relation` attribute above)
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
+  deleted             Boolean       @default(false)
   @@id([userId, groupId])
 }
