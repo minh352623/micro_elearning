@@ -33,9 +33,19 @@ export declare class UserController {
     updateUser(id: number, userDTO: any): Promise<import("rxjs").Observable<{
         msg: string;
         data: {
-            createAt: number;
-            updateAt: number;
-            [Symbol.toStringTag]: "PrismaPromise";
+            id: number;
+            fullname: string;
+            avatar: string;
+            address: string;
+            phone: string;
+            age: number;
+            email: string;
+            password: string;
+            twoFactorAuthenticationSecret: string;
+            isTwoFactorAuthenticationEnabled: boolean;
+            createdAt: Date;
+            updatedAt: Date;
+            deleted: boolean;
         };
     }>>;
     deleteUserById(id: number): import("rxjs").Observable<{
@@ -58,7 +68,8 @@ export declare class UserController {
             deleted: boolean;
         };
     }>;
-    getPaginaion(limit?: number, page?: number, search?: string, order_by?: string): import("rxjs").Observable<{
+    getPaginaion(limit?: number, page?: number, search?: string, order_by?: string): Promise<import("rxjs").Observable<{
+        totalRow: number;
         msg: string;
         data: {
             createAt: number;
@@ -76,5 +87,18 @@ export declare class UserController {
             createdAt: Date;
             updatedAt: Date;
         }[];
-    }>;
+    }>>;
+    getAllGroupOfUser(id: number): Promise<import("rxjs").Observable<{
+        msg: string;
+        data: {
+            fullname: string;
+            email: string;
+            groups: {
+                group: {
+                    name: string;
+                };
+                groupId: number;
+            }[];
+        };
+    }>>;
 }

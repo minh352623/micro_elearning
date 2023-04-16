@@ -44,14 +44,14 @@ export class UserController {
       }),
     )
     avatar: Express.Multer.File,
-
-    @Req()
     @Body()
     userDTO: UserDTO,
   ) {
     try {
       const avatarFile = await this.cloudinaryService.uploadImage(avatar);
-      userDTO.avatar = avatarFile.url;
+      if (avatarFile && avatarFile.url) {
+        userDTO.avatar = avatarFile.url;
+      }
       return (await this.userService.CreateUser(userDTO)).pipe(
         map((data) => {
           return {
@@ -84,8 +84,6 @@ export class UserController {
     fileUsers: Express.Multer.File,
   ) {
     try {
-      console.log(fileUsers);
-      // return 1;
       return this.userService.createManyUser(fileUsers);
     } catch (err) {
       console.log(err);
@@ -108,8 +106,8 @@ export class UserController {
             msg: 'Update user successfully',
             data: {
               ...data,
-              createAt: Number(data.createAt),
-              updateAt: Number(data.updateAt),
+              // createAt: Number(data.createAt),
+              // updateAt: Number(data.updateAt),
             },
           };
         }),
@@ -144,16 +142,18 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('pagination')
-  getPaginaion(
+  async getPaginaion(
     @Query('limit') limit: number = 10,
     @Query('page') page: number = 1,
     @Query('search') search: string = undefined,
     @Query('order_by') order_by: string = 'desc',
   ) {
     try {
+      const countUser = await this.userService.countUser();
       return this.userService.GetAllUser(limit, page, search, order_by).pipe(
         map((data) => {
           return {
+            totalRow: countUser,
             msg: 'Get all user successfully',
             data: data.map((e) => {
               const { deleted, ...user } = e;
@@ -163,6 +163,28 @@ export class UserController {
                 updateAt: Number(e.updatedAt),
               };
             }),
+          };
+        }),
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('get-all-group-user/:id')
+  async getAllGroupOfUser(
+    @Param('id')
+    id: number,
+  ) {
+    try {
+      return this.userService.GetAllGroup(id).pipe(
+        map((data) => {
+          return {
+            msg: 'Get all group successfully',
+            data: {
+              ...data,
+            },
           };
         }),
       );

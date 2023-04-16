@@ -23,16 +23,23 @@ export declare class UserService {
         updatedAt: Date;
         deleted: boolean;
     }>>;
+    countUser(): Promise<number>;
     createManyUser(fileUsers: any): Promise<{
         msg: string;
     }>;
-    UpdateUser(id: number, userDTO: any): Promise<import("rxjs").Observable<{
-        createAt: number;
-        updateAt: number;
-        [Symbol.toStringTag]: "PrismaPromise";
-    }>>;
+    UpdateUser(id: number, userDTO: any): Promise<import("rxjs").Observable<import(".prisma/client").User>>;
     Delete(id: number): import("rxjs").Observable<import(".prisma/client").User>;
     GetAllUser(limit?: number, page?: number, search?: string, order_by?: string): import("rxjs").Observable<import(".prisma/client").User[]>;
     setTwoFactorAuthenticationSecret(secret: string, user_id: number): Promise<import(".prisma/client").User>;
     turnOnTwoFactorAuthentication(user_id: number): Promise<import(".prisma/client").User>;
+    GetAllGroup(id: number): import("rxjs").Observable<{
+        fullname: string;
+        email: string;
+        groups: {
+            group: {
+                name: string;
+            };
+            groupId: number;
+        }[];
+    }>;
 }

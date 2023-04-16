@@ -40,7 +40,9 @@ let UserController = class UserController {
     async createUser(avatar, userDTO) {
         try {
             const avatarFile = await this.cloudinaryService.uploadImage(avatar);
-            userDTO.avatar = avatarFile.url;
+            if (avatarFile && avatarFile.url) {
+                userDTO.avatar = avatarFile.url;
+            }
             return (await this.userService.CreateUser(userDTO)).pipe((0, rxjs_1.map)((data) => {
                 return {
                     msg: 'Create user successfully',
@@ -54,7 +56,6 @@ let UserController = class UserController {
     }
     async createManyUser(fileUsers) {
         try {
-            console.log(fileUsers);
             return this.userService.createManyUser(fileUsers);
         }
         catch (err) {
@@ -69,7 +70,7 @@ let UserController = class UserController {
             return (await this.userService.UpdateUser(id, userDTO)).pipe((0, rxjs_1.map)((data) => {
                 return {
                     msg: 'Update user successfully',
-                    data: Object.assign(Object.assign({}, data), { createAt: Number(data.createAt), updateAt: Number(data.updateAt) }),
+                    data: Object.assign({}, data),
                 };
             }));
         }
@@ -91,15 +92,30 @@ let UserController = class UserController {
             console.log(err);
         }
     }
-    getPaginaion(limit = 10, page = 1, search = undefined, order_by = 'desc') {
+    async getPaginaion(limit = 10, page = 1, search = undefined, order_by = 'desc') {
         try {
+            const countUser = await this.userService.countUser();
             return this.userService.GetAllUser(limit, page, search, order_by).pipe((0, rxjs_1.map)((data) => {
                 return {
+                    totalRow: countUser,
                     msg: 'Get all user successfully',
                     data: data.map((e) => {
                         const { deleted } = e, user = __rest(e, ["deleted"]);
                         return Object.assign(Object.assign({}, user), { createAt: Number(e.createdAt), updateAt: Number(e.updatedAt) });
                     }),
+                };
+            }));
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+    async getAllGroupOfUser(id) {
+        try {
+            return this.userService.GetAllGroup(id).pipe((0, rxjs_1.map)((data) => {
+                return {
+                    msg: 'Get all group successfully',
+                    data: Object.assign({}, data),
                 };
             }));
         }
@@ -118,7 +134,6 @@ __decorate([
             new common_1.FileTypeValidator({ fileType: 'image/png' }),
         ],
     }))),
-    __param(1, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, user_dto_1.UserDTO]),
@@ -169,8 +184,16 @@ __decorate([
     __param(3, (0, common_1.Query)('order_by')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number, String, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "getPaginaion", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('get-all-group-user/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllGroupOfUser", null);
 UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService,

@@ -8,6 +8,7 @@ import { TwoFaModule } from './two-fa/two-fa.module';
 import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
 import { CloudinaryModule } from './cloundinay/cloudinary.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CloudinaryModule } from './cloundinay/cloudinary.module';
     TwoFaModule,
     SearchModule,
     CloudinaryModule,
+    GroupModule,
   ],
   controllers: [AppController],
   providers: [AppService],

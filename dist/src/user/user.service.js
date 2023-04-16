@@ -37,6 +37,14 @@ let UserService = class UserService {
             console.log(err);
         }
     }
+    async countUser() {
+        try {
+            return await this.databaseService.user.count();
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
     async createManyUser(fileUsers) {
         var _a, _b, _c, _d;
         try {
@@ -57,11 +65,9 @@ let UserService = class UserService {
                 }
             }
             if (userArr.length > 0) {
-                console.log(userArr);
                 const importUsers = await this.databaseService.user.createMany({
                     data: userArr,
                 });
-                console.log(importUsers);
                 return {
                     msg: 'excel successfully imported',
                 };
@@ -75,14 +81,12 @@ let UserService = class UserService {
     async UpdateUser(id, userDTO) {
         try {
             this.loggerService.log('Update User');
-            const userUpdate = this.databaseService.user.update({
+            return (0, rxjs_1.from)(this.databaseService.user.update({
                 data: Object.assign({}, userDTO),
                 where: {
                     id: Number(id),
                 },
-            });
-            const currentTime = new Date().getTime();
-            return (0, rxjs_1.of)(Object.assign(Object.assign({}, userUpdate), { createAt: currentTime, updateAt: currentTime }));
+            }));
         }
         catch (err) {
             this.loggerService.error('Failed to update user', err);
@@ -161,6 +165,34 @@ let UserService = class UserService {
                 id: user_id,
             },
         });
+    }
+    GetAllGroup(id) {
+        try {
+            this.loggerService.log('Get all group');
+            return (0, rxjs_1.from)(this.databaseService.user.findUnique({
+                where: {
+                    id: Number(id),
+                },
+                select: {
+                    email: true,
+                    fullname: true,
+                    groups: {
+                        select: {
+                            groupId: true,
+                            group: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            }));
+        }
+        catch (err) {
+            this.loggerService.error('Failed to get users', err);
+            throw err;
+        }
     }
 };
 UserService = __decorate([
