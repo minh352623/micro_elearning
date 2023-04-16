@@ -44,6 +44,14 @@ export class UserService {
     }
   }
 
+  async countUser() {
+    try {
+      return await this.databaseService.user.count();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async createManyUser(fileUsers: any) {
     try {
       this.loggerService.log('Create Many User');
@@ -68,11 +76,9 @@ export class UserService {
       }
 
       if (userArr.length > 0) {
-        console.log(userArr);
         const importUsers = await this.databaseService.user.createMany({
           data: userArr,
         });
-        console.log(importUsers);
 
         return {
           msg: 'excel successfully imported',
@@ -88,21 +94,17 @@ export class UserService {
     try {
       this.loggerService.log('Update User');
 
-      const userUpdate = this.databaseService.user.update({
-        data: {
-          ...userDTO,
-        },
-        where: {
-          id: Number(id),
-        },
-      });
-      const currentTime = new Date().getTime();
-
-      return of({
-        ...userUpdate,
-        createAt: currentTime,
-        updateAt: currentTime,
-      });
+      // const userUpdate =
+      return from(
+        this.databaseService.user.update({
+          data: {
+            ...userDTO,
+          } as Prisma.UserUpdateInput,
+          where: {
+            id: Number(id),
+          } as Prisma.UserWhereUniqueInput,
+        }),
+      );
     } catch (err) {
       this.loggerService.error('Failed to update user', err);
       throw err;
@@ -208,5 +210,48 @@ export class UserService {
         id: user_id,
       },
     });
+  }
+
+  GetAllGroup(id: number) {
+    try {
+      this.loggerService.log('Get all group');
+
+      return from(
+        this.databaseService.user.findUnique({
+          where: {
+            id: Number(id),
+          },
+          select: {
+            // This will work!
+            email: true,
+            fullname: true,
+            groups: {
+              select: {
+                groupId: true,
+                group: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+          // include: {
+          //   groups: {
+          //     include: {
+          //       group: {
+          //         select: {
+          //           name: true,
+          //         },
+          //       },
+          //     },
+          //   },
+          // },
+        }),
+      );
+    } catch (err) {
+      this.loggerService.error('Failed to get users', err);
+      throw err;
+    }
   }
 }
