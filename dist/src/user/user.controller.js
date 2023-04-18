@@ -78,6 +78,14 @@ let UserController = class UserController {
             console.log(err);
         }
     }
+    async forgotPassword(req) {
+        try {
+            return this.userService.forgotPassword(req.user);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
     deleteUserById(id) {
         try {
             return this.userService.Delete(id).pipe((0, rxjs_1.map)((data) => {
@@ -167,6 +175,14 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('forgot-password'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "forgotPassword", null);
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Delete)(':id'),

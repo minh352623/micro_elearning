@@ -118,6 +118,16 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get('forgot-password')
+  async forgotPassword(@Req() req: any) {
+    try {
+      return this.userService.forgotPassword(req.user);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   deleteUserById(@Param('id') id: number) {
     try {

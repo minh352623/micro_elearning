@@ -15,11 +15,12 @@ const auth_service_1 = require("../auth/auth.service");
 const database_service_1 = require("../database/database.service");
 const jwt_1 = require("@nestjs/jwt");
 const search_module_1 = require("../search/search.module");
+const kafka_module_1 = require("../kafka/kafka.module");
 let TwoFaModule = class TwoFaModule {
 };
 TwoFaModule = __decorate([
     (0, common_1.Module)({
-        imports: [search_module_1.SearchModule],
+        imports: [search_module_1.SearchModule, kafka_module_1.KafkaModule],
         controllers: [two_fa_controller_1.TwoFaController],
         providers: [
             two_fa_service_1.TwoFaService,

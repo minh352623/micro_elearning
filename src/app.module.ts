@@ -9,6 +9,7 @@ import { SearchService } from './search/search.service';
 import { SearchModule } from './search/search.module';
 import { CloudinaryModule } from './cloundinay/cloudinary.module';
 import { GroupModule } from './group/group.module';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GroupModule } from './group/group.module';
     SearchModule,
     CloudinaryModule,
     GroupModule,
+    KafkaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

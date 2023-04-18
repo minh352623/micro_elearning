@@ -12,6 +12,7 @@ import { SearchModule } from 'src/search/search.module';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { DatabaseModule } from 'src/database/database.module';
 import { CloudinaryModule } from 'src/cloundinay/cloudinary.module';
+import { KafkaModule } from 'src/kafka/kafka.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CloudinaryModule } from 'src/cloundinay/cloudinary.module';
     // AuthModule,
     SearchModule,
     CloudinaryModule,
+    KafkaModule,
   ],
   controllers: [UserController],
   providers: [UserService, DatabaseService, JwtTwoFactorStrategy, JwtStrategy],

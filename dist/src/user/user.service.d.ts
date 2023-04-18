@@ -1,11 +1,17 @@
 import { UserDTO } from './user.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { SearchService } from 'src/search/search.service';
+import { KafkaService } from 'src/kafka/kafka.service';
 export declare class UserService {
     private databaseService;
     private readonly searchService;
+    private readonly kafkaService;
     private loggerService;
-    constructor(databaseService: DatabaseService, searchService: SearchService);
+    constructor(databaseService: DatabaseService, searchService: SearchService, kafkaService: KafkaService);
+    onModuleInit(): Promise<void>;
+    forgotPassword(userDTO: UserDTO): Promise<{
+        message: string;
+    }>;
     CreateUser(userDTO: UserDTO): Promise<import("rxjs").Observable<{
         createAt: number;
         updateAt: number;

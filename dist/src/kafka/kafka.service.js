@@ -26,7 +26,7 @@ let KafkaService = class KafkaService {
             },
         });
         this.consumer = this.kafkaClient.consumer({
-            groupId: 'exchange-microservice',
+            groupId: 'elearning-user-microservice',
         });
         this.producer = this.kafkaClient.producer();
     }
