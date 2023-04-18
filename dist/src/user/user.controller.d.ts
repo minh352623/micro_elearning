@@ -48,6 +48,9 @@ export declare class UserController {
             deleted: boolean;
         };
     }>>;
+    forgotPassword(req: any): Promise<{
+        message: string;
+    }>;
     deleteUserById(id: number): import("rxjs").Observable<{
         msg: string;
         data: {

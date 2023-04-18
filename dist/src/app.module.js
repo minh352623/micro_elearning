@@ -17,6 +17,7 @@ const two_fa_module_1 = require("./two-fa/two-fa.module");
 const search_module_1 = require("./search/search.module");
 const cloudinary_module_1 = require("./cloundinay/cloudinary.module");
 const group_module_1 = require("./group/group.module");
+const kafka_module_1 = require("./kafka/kafka.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -29,6 +30,7 @@ AppModule = __decorate([
             search_module_1.SearchModule,
             cloudinary_module_1.CloudinaryModule,
             group_module_1.GroupModule,
+            kafka_module_1.KafkaModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -9,6 +9,7 @@ const XLSX = require('xlsx');
 
 import * as bcrypt from 'bcryptjs';
 import path from 'path';
+import { KafkaService } from 'src/kafka/kafka.service';
 
 @Injectable()
 export class UserService {
@@ -18,8 +19,30 @@ export class UserService {
     private databaseService: DatabaseService,
 
     private readonly searchService: SearchService,
+    private readonly kafkaService: KafkaService,
   ) {
     this.loggerService = new Logger();
+  }
+
+  async onModuleInit() {
+    try {
+      const consumerExchangeQoc = this.kafkaService.GetConsumer();
+      const consumerStatusExchangeQoc = this.kafkaService.GetConsumer(
+        'exchange-microservice-status',
+      );
+    } catch (err) {
+      this.loggerService.error('An error while init the module exchange', err);
+    }
+  }
+
+  async forgotPassword(userDTO: UserDTO) {
+    try {
+      this.loggerService.log('Forgot passsowrd');
+      this.kafkaService.SendMessage('forgot-password', userDTO);
+      return {
+        message: 'Send request successfully',
+      };
+    } catch (err) {}
   }
 
   async CreateUser(userDTO: UserDTO) {

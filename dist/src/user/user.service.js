@@ -16,11 +16,32 @@ const rxjs_1 = require("rxjs");
 const search_service_1 = require("../search/search.service");
 const XLSX = require('xlsx');
 const bcrypt = require("bcryptjs");
+const kafka_service_1 = require("../kafka/kafka.service");
 let UserService = class UserService {
-    constructor(databaseService, searchService) {
+    constructor(databaseService, searchService, kafkaService) {
         this.databaseService = databaseService;
         this.searchService = searchService;
+        this.kafkaService = kafkaService;
         this.loggerService = new common_1.Logger();
+    }
+    async onModuleInit() {
+        try {
+            const consumerExchangeQoc = this.kafkaService.GetConsumer();
+            const consumerStatusExchangeQoc = this.kafkaService.GetConsumer('exchange-microservice-status');
+        }
+        catch (err) {
+            this.loggerService.error('An error while init the module exchange', err);
+        }
+    }
+    async forgotPassword(userDTO) {
+        try {
+            this.loggerService.log('Forgot passsowrd');
+            this.kafkaService.SendMessage('forgot-password', userDTO);
+            return {
+                message: 'Send request successfully',
+            };
+        }
+        catch (err) { }
     }
     async CreateUser(userDTO) {
         try {
@@ -198,7 +219,8 @@ let UserService = class UserService {
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [database_service_1.DatabaseService,
-        search_service_1.SearchService])
+        search_service_1.SearchService,
+        kafka_service_1.KafkaService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

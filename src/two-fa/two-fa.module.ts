@@ -6,9 +6,10 @@ import { AuthService } from 'src/auth/auth.service';
 import { DatabaseService } from 'src/database/database.service';
 import { JwtService } from '@nestjs/jwt';
 import { SearchModule } from 'src/search/search.module';
+import { KafkaModule } from 'src/kafka/kafka.module';
 
 @Module({
-  imports: [SearchModule],
+  imports: [SearchModule, KafkaModule],
   controllers: [TwoFaController],
   providers: [
     TwoFaService,
