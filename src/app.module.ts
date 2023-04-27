@@ -10,7 +10,9 @@ import { SearchModule } from './search/search.module';
 import { CloudinaryModule } from './cloundinay/cloudinary.module';
 import { GroupModule } from './group/group.module';
 import { KafkaModule } from './kafka/kafka.module';
-
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { join } from 'path';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     DatabaseModule,
@@ -21,6 +23,31 @@ import { KafkaModule } from './kafka/kafka.module';
     CloudinaryModule,
     GroupModule,
     KafkaModule,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        // transport: config.get('MAIL_TRANSPORT'),
+        transport: {
+          host: config.get('MAIL_HOST'),
+          secure: false,
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: `"No Reply" <${config.get('MAIL_FROM')}>`,
+        },
+        template: {
+          dir: join(__dirname, '/templates/email'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

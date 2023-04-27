@@ -2,12 +2,14 @@ import { UserDTO } from './user.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { SearchService } from 'src/search/search.service';
 import { KafkaService } from 'src/kafka/kafka.service';
+import { MailerService } from '@nest-modules/mailer';
 export declare class UserService {
     private databaseService;
     private readonly searchService;
     private readonly kafkaService;
+    private mailerService;
     private loggerService;
-    constructor(databaseService: DatabaseService, searchService: SearchService, kafkaService: KafkaService);
+    constructor(databaseService: DatabaseService, searchService: SearchService, kafkaService: KafkaService, mailerService: MailerService);
     onModuleInit(): Promise<void>;
     forgotPassword(userDTO: UserDTO): Promise<{
         message: string;

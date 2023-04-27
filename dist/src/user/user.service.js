@@ -17,11 +17,13 @@ const search_service_1 = require("../search/search.service");
 const XLSX = require('xlsx');
 const bcrypt = require("bcryptjs");
 const kafka_service_1 = require("../kafka/kafka.service");
+const mailer_1 = require("@nest-modules/mailer");
 let UserService = class UserService {
-    constructor(databaseService, searchService, kafkaService) {
+    constructor(databaseService, searchService, kafkaService, mailerService) {
         this.databaseService = databaseService;
         this.searchService = searchService;
         this.kafkaService = kafkaService;
+        this.mailerService = mailerService;
         this.loggerService = new common_1.Logger();
     }
     async onModuleInit() {
@@ -36,9 +38,16 @@ let UserService = class UserService {
     async forgotPassword(userDTO) {
         try {
             this.loggerService.log('Forgot passsowrd');
-            this.kafkaService.SendMessage('forgot-password', userDTO);
+            await this.mailerService.sendMail({
+                to: userDTO.email,
+                subject: 'Welcome to my website',
+                template: './welcome',
+                context: {
+                    name: userDTO.fullname,
+                },
+            });
             return {
-                message: 'Send request successfully',
+                message: 'send mail success',
             };
         }
         catch (err) { }
@@ -220,7 +229,8 @@ UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [database_service_1.DatabaseService,
         search_service_1.SearchService,
-        kafka_service_1.KafkaService])
+        kafka_service_1.KafkaService,
+        mailer_1.MailerService])
 ], UserService);
 exports.UserService = UserService;
 //# sourceMappingURL=user.service.js.map

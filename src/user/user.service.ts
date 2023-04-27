@@ -10,6 +10,7 @@ const XLSX = require('xlsx');
 import * as bcrypt from 'bcryptjs';
 import path from 'path';
 import { KafkaService } from 'src/kafka/kafka.service';
+import { MailerService } from '@nest-modules/mailer';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
 
     private readonly searchService: SearchService,
     private readonly kafkaService: KafkaService,
+    private mailerService: MailerService,
   ) {
     this.loggerService = new Logger();
   }
@@ -38,9 +40,21 @@ export class UserService {
   async forgotPassword(userDTO: UserDTO) {
     try {
       this.loggerService.log('Forgot passsowrd');
-      this.kafkaService.SendMessage('forgot-password', userDTO);
+      // this.kafkaService.SendMessage('forgot-password', userDTO);
+      // return {
+      //   message: 'Send request successfully',
+      // };
+      await this.mailerService.sendMail({
+        to: userDTO.email,
+        subject: 'Welcome to my website',
+        template: './welcome',
+        context: {
+          name: userDTO.fullname,
+        },
+      });
+
       return {
-        message: 'Send request successfully',
+        message: 'send mail success',
       };
     } catch (err) {}
   }
@@ -49,6 +63,7 @@ export class UserService {
     try {
       this.loggerService.log('Create User');
       userDTO.password = await bcrypt.hash(userDTO.password, 10);
+
       const userCreate = await this.databaseService.user.create({
         data: {
           ...userDTO,
