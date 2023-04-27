@@ -17,6 +17,10 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "fullname", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], UserDTO.prototype, "password", void 0);
 exports.UserDTO = UserDTO;
 class UserRegisterDTO {
 }

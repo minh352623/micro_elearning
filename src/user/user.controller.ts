@@ -48,10 +48,14 @@ export class UserController {
     userDTO: UserDTO,
   ) {
     try {
+      // if (avatar) {
       const avatarFile = await this.cloudinaryService.uploadImage(avatar);
       if (avatarFile && avatarFile.url) {
         userDTO.avatar = avatarFile.url;
       }
+      // }
+      // console.log({ url: avatarFile.url });
+
       return (await this.userService.CreateUser(userDTO)).pipe(
         map((data) => {
           return {

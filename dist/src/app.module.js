@@ -18,6 +18,9 @@ const search_module_1 = require("./search/search.module");
 const cloudinary_module_1 = require("./cloundinay/cloudinary.module");
 const group_module_1 = require("./group/group.module");
 const kafka_module_1 = require("./kafka/kafka.module");
+const mailer_1 = require("@nest-modules/mailer");
+const path_1 = require("path");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -31,6 +34,30 @@ AppModule = __decorate([
             cloudinary_module_1.CloudinaryModule,
             group_module_1.GroupModule,
             kafka_module_1.KafkaModule,
+            mailer_1.MailerModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                useFactory: async (config) => ({
+                    transport: {
+                        host: config.get('MAIL_HOST'),
+                        secure: false,
+                        auth: {
+                            user: config.get('MAIL_USER'),
+                            pass: config.get('MAIL_PASSWORD'),
+                        },
+                    },
+                    defaults: {
+                        from: `"No Reply" <${config.get('MAIL_FROM')}>`,
+                    },
+                    template: {
+                        dir: (0, path_1.join)(__dirname, '/templates/email'),
+                        adapter: new mailer_1.HandlebarsAdapter(),
+                        options: {
+                            strict: true,
+                        },
+                    },
+                }),
+                inject: [config_1.ConfigService],
+            }),
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
