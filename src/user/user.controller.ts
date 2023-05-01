@@ -130,7 +130,15 @@ export class UserController {
       console.log(err);
     }
   }
-
+  @UseGuards(AuthGuard('jwt'))
+  @Post('change-password')
+  async changePassword(@Req() req: any) {
+    try {
+      return this.userService.changePassword(req.body);
+    } catch (err) {
+      console.log(err);
+    }
+  }
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   deleteUserById(@Param('id') id: number) {

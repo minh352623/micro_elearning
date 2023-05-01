@@ -51,6 +51,9 @@ export declare class UserController {
     forgotPassword(req: any): Promise<{
         message: string;
     }>;
+    changePassword(req: any): Promise<{
+        message: string;
+    }>;
     deleteUserById(id: number): import("rxjs").Observable<{
         msg: string;
         data: {
@@ -94,8 +97,8 @@ export declare class UserController {
     getAllGroupOfUser(id: number): Promise<import("rxjs").Observable<{
         msg: string;
         data: {
-            fullname: string;
             email: string;
+            fullname: string;
             groups: {
                 group: {
                     name: string;

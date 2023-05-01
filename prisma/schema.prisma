@@ -49,3 +49,11 @@ model GroupUser {
   deleted             Boolean       @default(false)
   @@id([userId, groupId])
 }
+
+model ForgotPassword {
+  id    Int                 @id @default(autoincrement())
+  email  String
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  deleted               Boolean     @default(false)
+}

@@ -3,6 +3,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { SearchService } from 'src/search/search.service';
 import { KafkaService } from 'src/kafka/kafka.service';
 import { MailerService } from '@nest-modules/mailer';
+import 'dotenv/config';
 export declare class UserService {
     private databaseService;
     private readonly searchService;
@@ -12,6 +13,9 @@ export declare class UserService {
     constructor(databaseService: DatabaseService, searchService: SearchService, kafkaService: KafkaService, mailerService: MailerService);
     onModuleInit(): Promise<void>;
     forgotPassword(userDTO: UserDTO): Promise<{
+        message: string;
+    }>;
+    changePassword(userDTO: UserDTO): Promise<{
         message: string;
     }>;
     CreateUser(userDTO: UserDTO): Promise<import("rxjs").Observable<{
@@ -41,8 +45,8 @@ export declare class UserService {
     setTwoFactorAuthenticationSecret(secret: string, user_id: number): Promise<import(".prisma/client").User>;
     turnOnTwoFactorAuthentication(user_id: number): Promise<import(".prisma/client").User>;
     GetAllGroup(id: number): import("rxjs").Observable<{
-        fullname: string;
         email: string;
+        fullname: string;
         groups: {
             group: {
                 name: string;
