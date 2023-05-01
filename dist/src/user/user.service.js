@@ -18,6 +18,7 @@ const XLSX = require('xlsx');
 const bcrypt = require("bcryptjs");
 const kafka_service_1 = require("../kafka/kafka.service");
 const mailer_1 = require("@nest-modules/mailer");
+require("dotenv/config");
 let UserService = class UserService {
     constructor(databaseService, searchService, kafkaService, mailerService) {
         this.databaseService = databaseService;
@@ -37,20 +38,103 @@ let UserService = class UserService {
     }
     async forgotPassword(userDTO) {
         try {
-            this.loggerService.log('Forgot passsowrd');
-            await this.mailerService.sendMail({
-                to: userDTO.email,
-                subject: 'Welcome to my website',
-                template: './welcome',
-                context: {
-                    name: userDTO.fullname,
+            this.loggerService.log('Forgot Passowrd');
+            const check_sended_mail = await this.databaseService.forgotPassword.findFirst({
+                where: {
+                    email: userDTO.email,
+                },
+                orderBy: {
+                    createdAt: 'desc',
                 },
             });
+            if (check_sended_mail) {
+                let now_date = new Date();
+                let data_token = new Date(check_sended_mail.createdAt);
+                console.log(now_date);
+                console.log(data_token);
+                const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
+                console.log(minus);
+                if (minus > Number(process.env.TIME_LIMIT_SENDMAIL)) {
+                    this.mailerService.sendMail({
+                        to: userDTO.email,
+                        subject: 'Welcome to my website',
+                        template: './forgotPassword',
+                        context: {
+                            link: 'http://localhost:3001/front-end',
+                        },
+                    });
+                }
+                else {
+                    throw new common_1.HttpException('Sau 1 phút mới được gửi mail lần tiếp theo!!!', common_1.HttpStatus.BAD_REQUEST);
+                }
+            }
+            else {
+                this.mailerService.sendMail({
+                    to: userDTO.email,
+                    subject: 'Welcome to my website',
+                    template: './forgotPassword',
+                    context: {
+                        link: 'http://localhost:3001/front-end',
+                    },
+                });
+            }
+            const forgot_check = await this.databaseService.forgotPassword.create({
+                data: {
+                    email: userDTO.email,
+                },
+            });
+            console.log({ forgot_check });
             return {
                 message: 'send mail success',
             };
         }
-        catch (err) { }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    async changePassword(userDTO) {
+        try {
+            this.loggerService.log('Change passsowrd');
+            const check_sended_mail = await this.databaseService.forgotPassword.findFirst({
+                where: {
+                    email: userDTO.email,
+                },
+                orderBy: {
+                    createdAt: 'desc',
+                },
+            });
+            if (check_sended_mail) {
+                let now_date = new Date();
+                let data_token = new Date(check_sended_mail.createdAt);
+                const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
+                if (minus > Number(process.env.TIME_EFFECTIVE_SENDMAIL)) {
+                    throw new common_1.HttpException(`Xác nhận mail có hiệu lực trong vòng ${process.env.TIME_EFFECTIVE_SENDMAIL} phút!!!`, common_1.HttpStatus.BAD_REQUEST);
+                }
+                else {
+                    userDTO.password = await bcrypt.hash(userDTO.password, 10);
+                    await this.databaseService.user.update({
+                        data: Object.assign({}, userDTO),
+                        where: {
+                            email: userDTO.email,
+                        },
+                    });
+                }
+            }
+            else {
+                throw new common_1.HttpException('Ban phải xác nhận qua mail trước !!', common_1.HttpStatus.BAD_REQUEST);
+            }
+            const forgot_check = await this.databaseService.forgotPassword.deleteMany({
+                where: {
+                    email: userDTO.email,
+                },
+            });
+            return {
+                message: 'Change password  success',
+            };
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
     async CreateUser(userDTO) {
         try {

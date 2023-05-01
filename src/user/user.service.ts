@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import path from 'path';
 import { KafkaService } from 'src/kafka/kafka.service';
 import { MailerService } from '@nest-modules/mailer';
+import 'dotenv/config';
 
 @Injectable()
 export class UserService {
@@ -39,24 +40,121 @@ export class UserService {
 
   async forgotPassword(userDTO: UserDTO) {
     try {
-      this.loggerService.log('Forgot passsowrd');
-      // this.kafkaService.SendMessage('forgot-password', userDTO);
-      // return {
-      //   message: 'Send request successfully',
-      // };
-      await this.mailerService.sendMail({
-        to: userDTO.email,
-        subject: 'Welcome to my website',
-        template: './welcome',
-        context: {
-          name: userDTO.fullname,
+      this.loggerService.log('Forgot Passowrd');
+      const check_sended_mail =
+        await this.databaseService.forgotPassword.findFirst({
+          where: {
+            email: userDTO.email,
+          } as Prisma.ForgotPasswordWhereUniqueInput,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
+
+      if (check_sended_mail) {
+        let now_date = new Date();
+        let data_token = new Date(check_sended_mail.createdAt);
+        console.log(now_date);
+        console.log(data_token);
+
+        const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
+        //check phai 1 phut sao khi gửi mail mới dc gửi tiếp
+        console.log(minus);
+
+        if (minus > Number(process.env.TIME_LIMIT_SENDMAIL)) {
+          this.mailerService.sendMail({
+            to: userDTO.email,
+            subject: 'Welcome to my website',
+            template: './forgotPassword',
+            context: {
+              link: 'http://localhost:3001/front-end',
+            },
+          });
+        } else {
+          throw new HttpException(
+            'Sau 1 phút mới được gửi mail lần tiếp theo!!!',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      } else {
+        this.mailerService.sendMail({
+          to: userDTO.email,
+          subject: 'Welcome to my website',
+          template: './forgotPassword',
+          context: {
+            link: 'http://localhost:3001/front-end',
+          },
+        });
+      }
+
+      const forgot_check = await this.databaseService.forgotPassword.create({
+        data: {
+          email: userDTO.email,
         },
       });
-
+      console.log({ forgot_check });
       return {
         message: 'send mail success',
       };
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async changePassword(userDTO: UserDTO) {
+    try {
+      this.loggerService.log('Change passsowrd');
+      const check_sended_mail =
+        await this.databaseService.forgotPassword.findFirst({
+          where: {
+            email: userDTO.email,
+          } as Prisma.ForgotPasswordWhereUniqueInput,
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
+
+      if (check_sended_mail) {
+        let now_date = new Date();
+        let data_token = new Date(check_sended_mail.createdAt);
+        const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
+        if (minus > Number(process.env.TIME_EFFECTIVE_SENDMAIL)) {
+          throw new HttpException(
+            `Xác nhận mail có hiệu lực trong vòng ${process.env.TIME_EFFECTIVE_SENDMAIL} phút!!!`,
+            HttpStatus.BAD_REQUEST,
+          );
+        } else {
+          userDTO.password = await bcrypt.hash(userDTO.password, 10);
+
+          await this.databaseService.user.update({
+            data: {
+              ...userDTO,
+            } as Prisma.UserUpdateInput,
+            where: {
+              email: userDTO.email,
+            } as Prisma.UserWhereUniqueInput,
+          });
+        }
+      } else {
+        throw new HttpException(
+          'Ban phải xác nhận qua mail trước !!',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const forgot_check = await this.databaseService.forgotPassword.deleteMany(
+        {
+          where: {
+            email: userDTO.email,
+          },
+        },
+      );
+
+      return {
+        message: 'Change password  success',
+      };
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async CreateUser(userDTO: UserDTO) {
