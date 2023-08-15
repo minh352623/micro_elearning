@@ -12,6 +12,12 @@ export declare class UserController {
             createAt: number;
             updateAt: number;
             id: number;
+            status: string;
+            sort: number;
+            user_created: string;
+            date_created: Date;
+            user_updated: string;
+            date_updated: Date;
             fullname: string;
             avatar: string;
             address: string;
@@ -21,8 +27,6 @@ export declare class UserController {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
-            createdAt: Date;
-            updatedAt: Date;
             deleted: boolean;
         };
     }>>;
@@ -34,6 +38,12 @@ export declare class UserController {
         msg: string;
         data: {
             id: number;
+            status: string;
+            sort: number;
+            user_created: string;
+            date_created: Date;
+            user_updated: string;
+            date_updated: Date;
             fullname: string;
             avatar: string;
             address: string;
@@ -43,8 +53,6 @@ export declare class UserController {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
-            createdAt: Date;
-            updatedAt: Date;
             deleted: boolean;
         };
     }>>;
@@ -60,6 +68,12 @@ export declare class UserController {
             createAt: number;
             updateAt: number;
             id: number;
+            status: string;
+            sort: number;
+            user_created: string;
+            date_created: Date;
+            user_updated: string;
+            date_updated: Date;
             fullname: string;
             avatar: string;
             address: string;
@@ -69,8 +83,6 @@ export declare class UserController {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
-            createdAt: Date;
-            updatedAt: Date;
             deleted: boolean;
         };
     }>;
@@ -81,6 +93,12 @@ export declare class UserController {
             createAt: number;
             updateAt: number;
             id: number;
+            status: string;
+            sort: number;
+            user_created: string;
+            date_created: Date;
+            user_updated: string;
+            date_updated: Date;
             fullname: string;
             avatar: string;
             address: string;
@@ -90,21 +108,7 @@ export declare class UserController {
             password: string;
             twoFactorAuthenticationSecret: string;
             isTwoFactorAuthenticationEnabled: boolean;
-            createdAt: Date;
-            updatedAt: Date;
         }[];
     }>>;
-    getAllGroupOfUser(id: number): Promise<import("rxjs").Observable<{
-        msg: string;
-        data: {
-            email: string;
-            fullname: string;
-            groups: {
-                group: {
-                    name: string;
-                };
-                groupId: number;
-            }[];
-        };
-    }>>;
+    getAllGroupOfUser(id: number): Promise<void>;
 }

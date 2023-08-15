@@ -20,8 +20,7 @@ export class UserService {
   constructor(
     private databaseService: DatabaseService,
 
-    private readonly searchService: SearchService,
-    private readonly kafkaService: KafkaService,
+  //  private readonly kafkaService: KafkaService,
     private mailerService: MailerService,
   ) {
     this.loggerService = new Logger();
@@ -29,10 +28,10 @@ export class UserService {
 
   async onModuleInit() {
     try {
-      const consumerExchangeQoc = this.kafkaService.GetConsumer();
-      const consumerStatusExchangeQoc = this.kafkaService.GetConsumer(
-        'exchange-microservice-status',
-      );
+      // const consumerExchangeQoc = this.kafkaService.GetConsumer();
+      // const consumerStatusExchangeQoc = this.kafkaService.GetConsumer(
+      //   'exchange-microservice-status',
+      // );
     } catch (err) {
       this.loggerService.error('An error while init the module exchange', err);
     }
@@ -47,13 +46,13 @@ export class UserService {
             email: userDTO.email,
           } as Prisma.ForgotPasswordWhereUniqueInput,
           orderBy: {
-            createdAt: 'desc',
+            date_created: 'desc',
           },
         });
 
       if (check_sended_mail) {
         let now_date = new Date();
-        let data_token = new Date(check_sended_mail.createdAt);
+        let data_token = new Date(check_sended_mail.date_created);
         console.log(now_date);
         console.log(data_token);
 
@@ -109,13 +108,13 @@ export class UserService {
             email: userDTO.email,
           } as Prisma.ForgotPasswordWhereUniqueInput,
           orderBy: {
-            createdAt: 'desc',
+            date_created: 'desc',
           },
         });
 
       if (check_sended_mail) {
         let now_date = new Date();
-        let data_token = new Date(check_sended_mail.createdAt);
+        let data_token = new Date(check_sended_mail.date_created);
         const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
         if (minus > Number(process.env.TIME_EFFECTIVE_SENDMAIL)) {
           throw new HttpException(
@@ -168,7 +167,7 @@ export class UserService {
         },
       });
       const currentTime = new Date().getTime();
-      const test = await this.searchService.createIndex('user', userCreate);
+      // const test = await this.searchService.createIndex('user', userCreate);
 
       return of({
         ...userCreate,
@@ -346,48 +345,5 @@ export class UserService {
         id: user_id,
       },
     });
-  }
-
-  GetAllGroup(id: number) {
-    try {
-      this.loggerService.log('Get all group');
-
-      return from(
-        this.databaseService.user.findUnique({
-          where: {
-            id: Number(id),
-          },
-          select: {
-            // This will work!
-            email: true,
-            fullname: true,
-            groups: {
-              select: {
-                groupId: true,
-                group: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-          // include: {
-          //   groups: {
-          //     include: {
-          //       group: {
-          //         select: {
-          //           name: true,
-          //         },
-          //       },
-          //     },
-          //   },
-          // },
-        }),
-      );
-    } catch (err) {
-      this.loggerService.error('Failed to get users', err);
-      throw err;
-    }
   }
 }

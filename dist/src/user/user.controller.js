@@ -100,7 +100,7 @@ let UserController = class UserController {
                 const user = __rest(data, []);
                 return {
                     msg: 'Delete user successfully',
-                    data: Object.assign(Object.assign({}, user), { createAt: Number(data.createdAt), updateAt: Number(data.updatedAt) }),
+                    data: Object.assign(Object.assign({}, user), { createAt: Number(data.date_created), updateAt: Number(data.date_updated) }),
                 };
             }));
         }
@@ -117,7 +117,7 @@ let UserController = class UserController {
                     msg: 'Get all user successfully',
                     data: data.map((e) => {
                         const { deleted } = e, user = __rest(e, ["deleted"]);
-                        return Object.assign(Object.assign({}, user), { createAt: Number(e.createdAt), updateAt: Number(e.updatedAt) });
+                        return Object.assign(Object.assign({}, user), { createAt: Number(e.date_created), updateAt: Number(e.date_updated) });
                     }),
                 };
             }));
@@ -127,17 +127,6 @@ let UserController = class UserController {
         }
     }
     async getAllGroupOfUser(id) {
-        try {
-            return this.userService.GetAllGroup(id).pipe((0, rxjs_1.map)((data) => {
-                return {
-                    msg: 'Get all group successfully',
-                    data: Object.assign({}, data),
-                };
-            }));
-        }
-        catch (err) {
-            throw err;
-        }
     }
 };
 __decorate([

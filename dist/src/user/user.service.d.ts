@@ -1,16 +1,12 @@
 import { UserDTO } from './user.dto';
 import { DatabaseService } from 'src/database/database.service';
-import { SearchService } from 'src/search/search.service';
-import { KafkaService } from 'src/kafka/kafka.service';
 import { MailerService } from '@nest-modules/mailer';
 import 'dotenv/config';
 export declare class UserService {
     private databaseService;
-    private readonly searchService;
-    private readonly kafkaService;
     private mailerService;
     private loggerService;
-    constructor(databaseService: DatabaseService, searchService: SearchService, kafkaService: KafkaService, mailerService: MailerService);
+    constructor(databaseService: DatabaseService, mailerService: MailerService);
     onModuleInit(): Promise<void>;
     forgotPassword(userDTO: UserDTO): Promise<{
         message: string;
@@ -22,6 +18,12 @@ export declare class UserService {
         createAt: number;
         updateAt: number;
         id: number;
+        status: string;
+        sort: number;
+        user_created: string;
+        date_created: Date;
+        user_updated: string;
+        date_updated: Date;
         fullname: string;
         avatar: string;
         address: string;
@@ -31,8 +33,6 @@ export declare class UserService {
         password: string;
         twoFactorAuthenticationSecret: string;
         isTwoFactorAuthenticationEnabled: boolean;
-        createdAt: Date;
-        updatedAt: Date;
         deleted: boolean;
     }>>;
     countUser(): Promise<number>;
@@ -44,14 +44,4 @@ export declare class UserService {
     GetAllUser(limit?: number, page?: number, search?: string, order_by?: string): import("rxjs").Observable<import(".prisma/client").User[]>;
     setTwoFactorAuthenticationSecret(secret: string, user_id: number): Promise<import(".prisma/client").User>;
     turnOnTwoFactorAuthentication(user_id: number): Promise<import(".prisma/client").User>;
-    GetAllGroup(id: number): import("rxjs").Observable<{
-        email: string;
-        fullname: string;
-        groups: {
-            group: {
-                name: string;
-            };
-            groupId: number;
-        }[];
-    }>;
 }

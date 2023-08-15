@@ -13,24 +13,18 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const database_service_1 = require("../database/database.service");
 const rxjs_1 = require("rxjs");
-const search_service_1 = require("../search/search.service");
 const XLSX = require('xlsx');
 const bcrypt = require("bcryptjs");
-const kafka_service_1 = require("../kafka/kafka.service");
 const mailer_1 = require("@nest-modules/mailer");
 require("dotenv/config");
 let UserService = class UserService {
-    constructor(databaseService, searchService, kafkaService, mailerService) {
+    constructor(databaseService, mailerService) {
         this.databaseService = databaseService;
-        this.searchService = searchService;
-        this.kafkaService = kafkaService;
         this.mailerService = mailerService;
         this.loggerService = new common_1.Logger();
     }
     async onModuleInit() {
         try {
-            const consumerExchangeQoc = this.kafkaService.GetConsumer();
-            const consumerStatusExchangeQoc = this.kafkaService.GetConsumer('exchange-microservice-status');
         }
         catch (err) {
             this.loggerService.error('An error while init the module exchange', err);
@@ -44,12 +38,12 @@ let UserService = class UserService {
                     email: userDTO.email,
                 },
                 orderBy: {
-                    createdAt: 'desc',
+                    date_created: 'desc',
                 },
             });
             if (check_sended_mail) {
                 let now_date = new Date();
-                let data_token = new Date(check_sended_mail.createdAt);
+                let data_token = new Date(check_sended_mail.date_created);
                 console.log(now_date);
                 console.log(data_token);
                 const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
@@ -100,12 +94,12 @@ let UserService = class UserService {
                     email: userDTO.email,
                 },
                 orderBy: {
-                    createdAt: 'desc',
+                    date_created: 'desc',
                 },
             });
             if (check_sended_mail) {
                 let now_date = new Date();
-                let data_token = new Date(check_sended_mail.createdAt);
+                let data_token = new Date(check_sended_mail.date_created);
                 const minus = (now_date.getTime() - data_token.getTime()) / (1000 * 60);
                 if (minus > Number(process.env.TIME_EFFECTIVE_SENDMAIL)) {
                     throw new common_1.HttpException(`Xác nhận mail có hiệu lực trong vòng ${process.env.TIME_EFFECTIVE_SENDMAIL} phút!!!`, common_1.HttpStatus.BAD_REQUEST);
@@ -144,7 +138,6 @@ let UserService = class UserService {
                 data: Object.assign({}, userDTO),
             });
             const currentTime = new Date().getTime();
-            const test = await this.searchService.createIndex('user', userCreate);
             return (0, rxjs_1.of)(Object.assign(Object.assign({}, userCreate), { createAt: currentTime, updateAt: currentTime }));
         }
         catch (err) {
@@ -280,40 +273,10 @@ let UserService = class UserService {
             },
         });
     }
-    GetAllGroup(id) {
-        try {
-            this.loggerService.log('Get all group');
-            return (0, rxjs_1.from)(this.databaseService.user.findUnique({
-                where: {
-                    id: Number(id),
-                },
-                select: {
-                    email: true,
-                    fullname: true,
-                    groups: {
-                        select: {
-                            groupId: true,
-                            group: {
-                                select: {
-                                    name: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            }));
-        }
-        catch (err) {
-            this.loggerService.error('Failed to get users', err);
-            throw err;
-        }
-    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [database_service_1.DatabaseService,
-        search_service_1.SearchService,
-        kafka_service_1.KafkaService,
         mailer_1.MailerService])
 ], UserService);
 exports.UserService = UserService;

@@ -9,7 +9,7 @@ import { SearchModule } from 'src/search/search.module';
 import { KafkaModule } from 'src/kafka/kafka.module';
 
 @Module({
-  imports: [SearchModule, KafkaModule],
+  imports: [],
   controllers: [TwoFaController],
   providers: [
     TwoFaService,

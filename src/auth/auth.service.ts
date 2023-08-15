@@ -28,7 +28,7 @@ export class AuthService {
     try {
       user.password = await bcrypt.hash(user.password, 10);
       const userNew = await this.databaseService.user.create({
-        data: { ...user },
+        data: { ...user } as Prisma.UserCreateInput ,
       });
       const payload = { ...userNew };
       const token = this.jwtService.sign(payload);

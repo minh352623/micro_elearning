@@ -13,17 +13,13 @@ const user_service_1 = require("./user.service");
 const database_service_1 = require("../database/database.service");
 const jwtTwoFactor_strategy_1 = require("../auth/jwtTwoFactor.strategy");
 const jwt_strategy_1 = require("../auth/jwt.strategy");
-const search_module_1 = require("../search/search.module");
 const cloudinary_module_1 = require("../cloundinay/cloudinary.module");
-const kafka_module_1 = require("../kafka/kafka.module");
 let UserModule = class UserModule {
 };
 UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            search_module_1.SearchModule,
             cloudinary_module_1.CloudinaryModule,
-            kafka_module_1.KafkaModule,
         ],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService, database_service_1.DatabaseService, jwtTwoFactor_strategy_1.JwtTwoFactorStrategy, jwt_strategy_1.JwtStrategy],

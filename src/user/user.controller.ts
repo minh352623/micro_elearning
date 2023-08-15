@@ -151,8 +151,8 @@ export class UserController {
             msg: 'Delete user successfully',
             data: {
               ...user,
-              createAt: Number(data.createdAt),
-              updateAt: Number(data.updatedAt),
+              createAt: Number(data.date_created),
+              updateAt: Number(data.date_updated),
             },
           };
         }),
@@ -181,8 +181,8 @@ export class UserController {
               const { deleted, ...user } = e;
               return {
                 ...user,
-                createAt: Number(e.createdAt),
-                updateAt: Number(e.updatedAt),
+                createAt: Number(e.date_created),
+                updateAt: Number(e.date_updated),
               };
             }),
           };
@@ -199,19 +199,19 @@ export class UserController {
     @Param('id')
     id: number,
   ) {
-    try {
-      return this.userService.GetAllGroup(id).pipe(
-        map((data) => {
-          return {
-            msg: 'Get all group successfully',
-            data: {
-              ...data,
-            },
-          };
-        }),
-      );
-    } catch (err) {
-      throw err;
-    }
+    // try {
+    //   return this.userService.GetAllGroup(id).pipe(
+    //     map((data) => {
+    //       return {
+    //         msg: 'Get all group successfully',
+    //         data: {
+    //           ...data,
+    //         },
+    //       };
+    //     }),
+    //   );
+    // } catch (err) {
+    //   throw err;
+    // }
   }
 }

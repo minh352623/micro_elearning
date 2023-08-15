@@ -14,10 +14,7 @@ const database_module_1 = require("./database/database.module");
 const user_module_1 = require("./user/user.module");
 const auth_module_1 = require("./auth/auth.module");
 const two_fa_module_1 = require("./two-fa/two-fa.module");
-const search_module_1 = require("./search/search.module");
 const cloudinary_module_1 = require("./cloundinay/cloudinary.module");
-const group_module_1 = require("./group/group.module");
-const kafka_module_1 = require("./kafka/kafka.module");
 const mailer_1 = require("@nest-modules/mailer");
 const path_1 = require("path");
 const config_1 = require("@nestjs/config");
@@ -30,10 +27,7 @@ AppModule = __decorate([
             user_module_1.UserModule,
             auth_module_1.AuthModule,
             two_fa_module_1.TwoFaModule,
-            search_module_1.SearchModule,
             cloudinary_module_1.CloudinaryModule,
-            group_module_1.GroupModule,
-            kafka_module_1.KafkaModule,
             mailer_1.MailerModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 useFactory: async (config) => ({
